@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -23,7 +23,7 @@ import { ProjectSlider } from "@/components/project-slider"; // Import ProjectSl
 
 export default function Portfolio() {
   const [activeSection, setActiveSection] = useState("hero");
-  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
   const sectionRefs = {
     hero: useRef<HTMLElement>(null),
     projects: useRef<HTMLElement>(null),
@@ -32,8 +32,17 @@ export default function Portfolio() {
   type ProjectCategory = "web" | "freelance" | "games";
   type SectionId = "hero" | "projects";
 
+  type Project = {
+    title: string;
+    description: string;
+    tags: string[];
+    image: string;
+    liveUrl?: string;
+    repoUrl?: string;
+  };
+
   // Project data
-  const projects = {
+  const projects: Record<ProjectCategory, Project[]> = {
     web: [
       {
         title: "Jobsyne - AI Powered Job Matching App",
@@ -170,23 +179,106 @@ export default function Portfolio() {
     };
   }, []);
 
-  // Slider controls
-  const nextSlide = (category: ProjectCategory) => {
-    setCurrentSlide((prev) =>
-      prev === projects[category].length - 1 ? 0 : prev + 1
-    );
-  };
+  useEffect(() => {
+    // Simulate loading time
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
 
-  const prevSlide = (category: ProjectCategory) => {
-    setCurrentSlide((prev) =>
-      prev === 0 ? projects[category].length - 1 : prev - 1
-    );
-  };
+    return () => clearTimeout(timer);
+  }, []);
 
   // Scroll to section
   const scrollToSection = (sectionId: SectionId) => {
     sectionRefs[sectionId].current?.scrollIntoView({ behavior: "smooth" });
   };
+
+  const ProjectCard = ({ project, index }: { project: Project; index: number }) => (
+    <motion.div
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{
+        duration: 0.6,
+        delay: index * 0.1,
+        ease: "easeOut"
+      }}
+      viewport={{ once: true, margin: "-100px" }}
+      className="group relative overflow-hidden rounded-lg border bg-background p-2"
+    >
+      <motion.div
+        initial={{ scale: 1 }}
+        whileHover={{ scale: 1.05 }}
+        transition={{ duration: 0.2 }}
+        className="aspect-video overflow-hidden rounded-md"
+      >
+        <img
+          src={project.image}
+          alt={project.title}
+          className="object-cover w-full h-full"
+        />
+      </motion.div>
+      <div className="p-4">
+        <h3 className="font-semibold mb-2">{project.title}</h3>
+        <p className="text-sm text-muted-foreground mb-4">{project.description}</p>
+        <div className="flex flex-wrap gap-2 mb-4">
+          {project.tags.map((tag, tagIndex) => (
+            <Badge key={tagIndex} variant="secondary" className="text-xs">
+              {tag}
+            </Badge>
+          ))}
+        </div>
+        <div className="flex gap-2">
+          {project.liveUrl && (
+            <Button size="sm" variant="outline" asChild>
+              <a href={project.liveUrl} target="_blank" rel="noopener noreferrer">
+                <Globe className="h-4 w-4 mr-2" /> Live
+              </a>
+            </Button>
+          )}
+          {project.repoUrl && (
+            <Button size="sm" variant="outline" asChild>
+              <a href={project.repoUrl} target="_blank" rel="noopener noreferrer">
+                <Github className="h-4 w-4 mr-2" /> Code
+              </a>
+            </Button>
+          )}
+        </div>
+      </div>
+    </motion.div>
+  );
+
+  const ProjectSkeleton = () => (
+    <div className="group relative overflow-hidden rounded-lg border bg-background p-2">
+      <div className="aspect-video overflow-hidden rounded-md bg-muted animate-pulse" />
+      <div className="p-4">
+        <div className="h-6 bg-muted rounded w-3/4 mb-2 animate-pulse" />
+        <div className="h-4 bg-muted rounded w-full mb-4 animate-pulse" />
+        <div className="flex flex-wrap gap-2 mb-4">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="h-5 bg-muted rounded w-16 animate-pulse" />
+          ))}
+        </div>
+        <div className="flex gap-2">
+          <div className="h-8 bg-muted rounded w-20 animate-pulse" />
+          <div className="h-8 bg-muted rounded w-20 animate-pulse" />
+        </div>
+      </div>
+    </div>
+  );
+
+  const ProjectGrid = ({ projects }: { projects: Project[] }) => (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {isLoading ? (
+        [...Array(6)].map((_, index) => (
+          <ProjectSkeleton key={index} />
+        ))
+      ) : (
+        projects.map((project, index) => (
+          <ProjectCard key={index} project={project} index={index} />
+        ))
+      )}
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -385,45 +477,11 @@ export default function Portfolio() {
           </div>
         </div>
 
-        {/* Animated background elements */}
-        <div className="absolute inset-0 -z-10 overflow-hidden">
-          {[...Array(5)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute rounded-full bg-primary/5"
-              initial={{
-                x: Math.random() * 100 - 50 + "%",
-                y: Math.random() * 100 - 50 + "%",
-                scale: Math.random() * 0.5 + 0.5,
-              }}
-              animate={{
-                x: [
-                  Math.random() * 100 - 50 + "%",
-                  Math.random() * 100 - 50 + "%",
-                  Math.random() * 100 - 50 + "%",
-                ],
-                y: [
-                  Math.random() * 100 - 50 + "%",
-                  Math.random() * 100 - 50 + "%",
-                  Math.random() * 100 - 50 + "%",
-                ],
-              }}
-              transition={{
-                duration: 20 + i * 5,
-                repeat: Number.POSITIVE_INFINITY,
-                repeatType: "reverse",
-              }}
-              style={{
-                width: (i + 1) * 100 + "px",
-                height: (i + 1) * 100 + "px",
-              }}
-            />
-          ))}
-        </div>
+       
 
         {/* Scroll indicator */}
         <motion.div
-          className="absolute bottom-4 md:bottom-8 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center w-full px-2"
+          className="absolute bottom-4 md:bottom-8 -translate-x-1/2 hidden md:flex flex-col items-center w-full px-2"
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY }}
         >
@@ -480,32 +538,17 @@ export default function Portfolio() {
 
             {/* Web Projects */}
             <TabsContent value="web">
-              <ProjectSlider
-                projects={projects.web}
-                currentSlide={currentSlide}
-                nextSlide={() => nextSlide("web")}
-                prevSlide={() => prevSlide("web")}
-              />
+              <ProjectGrid projects={projects.web} />
             </TabsContent>
 
             {/* Freelance Projects */}
             <TabsContent value="freelance">
-              <ProjectSlider
-                projects={projects.freelance}
-                currentSlide={currentSlide}
-                nextSlide={() => nextSlide("freelance")}
-                prevSlide={() => prevSlide("freelance")}
-              />
+              <ProjectGrid projects={projects.freelance} />
             </TabsContent>
 
             {/* Game Projects */}
             <TabsContent value="games">
-              <ProjectSlider
-                projects={projects.games}
-                currentSlide={currentSlide}
-                nextSlide={() => nextSlide("games")}
-                prevSlide={() => prevSlide("games")}
-              />
+              <ProjectGrid projects={projects.games} />
             </TabsContent>
           </Tabs>
         </div>
