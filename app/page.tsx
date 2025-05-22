@@ -374,8 +374,10 @@ export default function Portfolio() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <Button size="lg" variant="outline">
-                    <Download className="mr-2 h-4 w-4" /> Download Resume
+                  <Button size="lg" variant="outline" asChild>
+                    <a href="https://github.com/Gorcc/cdn/blob/main/port-cdn/DenizG%C3%B6rkem-CV.pdf?raw=true" download target="_blank" rel="noopener noreferrer">
+                      <Download className="mr-2 h-4 w-4" /> Download Resume
+                    </a>
                   </Button>
                 </motion.div>
               </div>
