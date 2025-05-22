@@ -23,7 +23,6 @@ import { ProjectSlider } from "@/components/project-slider"; // Import ProjectSl
 
 export default function Portfolio() {
   const [activeSection, setActiveSection] = useState("hero");
-  const [isLoading, setIsLoading] = useState(true);
   const sectionRefs = {
     hero: useRef<HTMLElement>(null),
     projects: useRef<HTMLElement>(null),
@@ -47,7 +46,7 @@ export default function Portfolio() {
       {
         title: "Jobsyne - AI Powered Job Matching App",
         description:
-          "Fullstack, SaaS app for job matching service.",
+          "A SaaS platform for job matching with AI-powered recommendations. Features include user authentication, real-time notifications, and a responsive UI. Built with Next.js, Supabase, and Stripe integration for payments.",
         tags: ["Next.js", "Stripe", "Tailwind","React","Typescript","Supabase","GeminiAPI"],
         image: "https://github.com/Gorcc/cdn/blob/main/port-cdn/jobsyne.png?raw=true",
         liveUrl: "https://www.jobsyne.com/",
@@ -56,7 +55,7 @@ export default function Portfolio() {
       {
         title: "Vyral - Video Sharing Platform",
         description:
-          "A YouTube-like video uploading platform built as a graduation project. Won the best graduation project award. Features include video upload, user authentication, comments, and likes.",
+          "A video sharing platform with user authentication, video upload, comments, and likes. Includes video player controls, user profiles, and a recommendation system. Built as a graduation project that won the best project award.",
         tags: ["Next.js", "Supabase", "TypeScript", "Tailwind CSS", "React"],
         image: "https://github.com/Gorcc/cdn/blob/main/port-cdn/ScreenShot%20Tool%20-20250522142421.png?raw=true",
         liveUrl: "vyral-six.vercel.app",
@@ -65,7 +64,7 @@ export default function Portfolio() {
       {
         title: "Social Media App",
         description:
-          "Analytics dashboard for social media management with real-time data visualization.",
+          "A social media platform with real-time chat, image sharing, and post creation. Features include user authentication, direct messaging, and real-time updates. Built with Next.js and Supabase for real-time functionality.",
         tags: ["Next.js", "React", "Supabase","Tailwind","TypeScript"],
         image: "https://github.com/Gorcc/cdn/blob/main/port-cdn/ScreenShot%20Tool%20-20250522015936.png?raw=true",
         liveUrl: "https://social-app-xi-hazel.vercel.app",
@@ -74,18 +73,17 @@ export default function Portfolio() {
       {
         title: "Almego Studio",
         description:
-          "A creative agency website built to showcase the work of the agency and freelance projects.",
+          "A creative agency website with smooth animations and responsive design. Features a portfolio showcase and service information. Built with React and Framer Motion for smooth transitions.",
         tags: ["React","Framer Motion","Tailwind"],
         image: "https://github.com/Gorcc/cdn/blob/main/port-cdn/ScreenShot%20Tool%20-20250522024034.png?raw=true",
         liveUrl: "https://www.almego.studio/",
-        
       },
     ],
     freelance: [
       {
         title: "Hive Records",
         description:
-          "Custom website development  & design for a record label.",
+          "Custom website development & design for a record label.",
         tags: ["React", "SASS", "JavaScript"],
         image: "https://github.com/Gorcc/cdn/blob/main/port-cdn/ScreenShot%20Tool%20-20250522025100.png?raw=true",
         liveUrl: "https://www.hiverecords24.com",
@@ -97,7 +95,6 @@ export default function Portfolio() {
           "Freelance work, for a GTA V racing team",
         tags: ["React"],
         image: "https://github.com/Gorcc/cdn/blob/main/port-site/sly.png?raw=true",
-    
         repoUrl: "https://github.com/Gorcc/sly-team",
       },
       {
@@ -106,23 +103,20 @@ export default function Portfolio() {
           "Designed and developed a website for a local GYM",
         tags: ["React"],
         image: "https://github.com/Gorcc/cdn/blob/main/port-cdn/ScreenShot%20Tool%20-20250522032831.png?raw=true",
-        
       },
-     
     ],
     games: [
       {
         title: "Heat Keeper",
         description:
-          "3D blacksmithing game, built for Winter Jam 2025 EMU as a part of 3 person team",
-        tags: ["Unity", "C#", "Blender"],
+          "A 3D blacksmithing game with crafting mechanics and resource management. Built for Winter Jam 2025 EMU as part of a three-person team.",
+        tags: ["Unity", "C#"],
         image: "https://github.com/Gorcc/cdn/blob/main/port-cdn/heatkeeper.png?raw=true",
-      
       },
       {
         title: "Unnamed Fishing RPG - Ongoing",
         description:
-          "Developing a fishing RPG in Unity, as a part of 3 person team",
+          "A fishing RPG in development with fishing mechanics and character progression. Features an open world and dynamic weather systems. Currently being developed with a team of four.",
         tags: ["Unity", "C#"],
         image: "https://github.com/Gorcc/cdn/blob/main/port-cdn/fishgame.png?raw=true",
       },
@@ -134,7 +128,6 @@ export default function Portfolio() {
         image: "https://github.com/Gorcc/cdn/blob/main/port-site/crazyhighway.png?raw=true",
         liveUrl: "https://gorcc.itch.io/crazy-highway",
       },
-      
     ],
   };
 
@@ -179,15 +172,6 @@ export default function Portfolio() {
     };
   }, []);
 
-  useEffect(() => {
-    // Simulate loading time
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
   // Scroll to section
   const scrollToSection = (sectionId: SectionId) => {
     sectionRefs[sectionId].current?.scrollIntoView({ behavior: "smooth" });
@@ -203,20 +187,37 @@ export default function Portfolio() {
         ease: "easeOut"
       }}
       viewport={{ once: true, margin: "-100px" }}
-      className="group relative overflow-hidden rounded-lg border bg-background p-2"
+      className="group relative overflow-hidden rounded-lg border bg-background p-2 mx-auto"
     >
-      <motion.div
-        initial={{ scale: 1 }}
-        whileHover={{ scale: 1.05 }}
-        transition={{ duration: 0.2 }}
-        className="aspect-video overflow-hidden rounded-md"
-      >
-        <img
-          src={project.image}
-          alt={project.title}
-          className="object-cover w-full h-full"
-        />
-      </motion.div>
+      {project.liveUrl ? (
+        <a href={project.liveUrl.startsWith('http') ? project.liveUrl : `https://${project.liveUrl}`} target="_blank" rel="noopener noreferrer">
+          <motion.div
+            initial={{ scale: 1 }}
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.2 }}
+            className="aspect-video overflow-hidden rounded-md cursor-pointer"
+          >
+            <img
+              src={project.image}
+              alt={project.title}
+              className="object-cover w-full h-full"
+            />
+          </motion.div>
+        </a>
+      ) : (
+        <motion.div
+          initial={{ scale: 1 }}
+          whileHover={{ scale: 1.05 }}
+          transition={{ duration: 0.2 }}
+          className="aspect-video overflow-hidden rounded-md"
+        >
+          <img
+            src={project.image}
+            alt={project.title}
+            className="object-cover w-full h-full"
+          />
+        </motion.div>
+      )}
       <div className="p-4">
         <h3 className="font-semibold mb-2">{project.title}</h3>
         <p className="text-sm text-muted-foreground mb-4">{project.description}</p>
@@ -247,36 +248,11 @@ export default function Portfolio() {
     </motion.div>
   );
 
-  const ProjectSkeleton = () => (
-    <div className="group relative overflow-hidden rounded-lg border bg-background p-2">
-      <div className="aspect-video overflow-hidden rounded-md bg-muted animate-pulse" />
-      <div className="p-4">
-        <div className="h-6 bg-muted rounded w-3/4 mb-2 animate-pulse" />
-        <div className="h-4 bg-muted rounded w-full mb-4 animate-pulse" />
-        <div className="flex flex-wrap gap-2 mb-4">
-          {[...Array(3)].map((_, i) => (
-            <div key={i} className="h-5 bg-muted rounded w-16 animate-pulse" />
-          ))}
-        </div>
-        <div className="flex gap-2">
-          <div className="h-8 bg-muted rounded w-20 animate-pulse" />
-          <div className="h-8 bg-muted rounded w-20 animate-pulse" />
-        </div>
-      </div>
-    </div>
-  );
-
   const ProjectGrid = ({ projects }: { projects: Project[] }) => (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {isLoading ? (
-        [...Array(6)].map((_, index) => (
-          <ProjectSkeleton key={index} />
-        ))
-      ) : (
-        projects.map((project, index) => (
-          <ProjectCard key={index} project={project} index={index} />
-        ))
-      )}
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-center">
+      {projects.map((project, index) => (
+        <ProjectCard key={index} project={project} index={index} />
+      ))}
     </div>
   );
 
