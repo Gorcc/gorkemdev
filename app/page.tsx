@@ -53,15 +53,15 @@ export default function Portfolio() {
         liveUrl: "https://www.jobsyne.com/",
         repoUrl: "https://github.com/Gorcc/jobsyne",
       },
-      // {
-      //   title: "Vyral - Video Sharing Platform",
-      //   description:
-      //     "A YouTube-like video uploading platform built as a graduation project. Won the best graduation project award. Features include video upload, user authentication, comments, and likes.",
-      //   tags: ["Next.js", "Supabase", "TypeScript", "Tailwind CSS", "React"],
-      //   image: "/placeholder.svg?height=300&width=500",
-      //   liveUrl: "vyral-six.vercel.app",
-      //   repoUrl: "https://github.com/Gorcc/vyral",
-      // },
+      {
+        title: "Vyral - Video Sharing Platform",
+        description:
+          "A YouTube-like video uploading platform built as a graduation project. Won the best graduation project award. Features include video upload, user authentication, comments, and likes.",
+        tags: ["Next.js", "Supabase", "TypeScript", "Tailwind CSS", "React"],
+        image: "https://github.com/Gorcc/cdn/blob/main/port-cdn/ScreenShot%20Tool%20-20250522142421.png?raw=true",
+        liveUrl: "vyral-six.vercel.app",
+        repoUrl: "https://github.com/Gorcc/vyral",
+      },
       {
         title: "Social Media App",
         description:
