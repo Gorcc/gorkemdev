@@ -20,6 +20,7 @@ import {
   ArrowDown,
 } from "lucide-react";
 import { ProjectSlider } from "@/components/project-slider"; // Import ProjectSlider component
+import { Analytics } from '@vercel/analytics/react';
 
 export default function Portfolio() {
   const [activeSection, setActiveSection] = useState("hero");
@@ -259,6 +260,7 @@ export default function Portfolio() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <CustomCursor />
+      <Analytics />
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-sm border-b">
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
@@ -529,6 +531,9 @@ export default function Portfolio() {
           </Tabs>
         </div>
       </section>
+
+      {/* Certificates & Awards Section */}
+   
 
       {/* Footer */}
       <footer className="py-8 border-t">
