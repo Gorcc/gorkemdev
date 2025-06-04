@@ -25,7 +25,6 @@ import {
 } from "lucide-react";
 import { ProjectSlider } from "@/components/project-slider"; // Import ProjectSlider component
 import { Analytics } from "@vercel/analytics/react";
-import ASCIIText from "@/components/ASCII";
 
 export default function Portfolio() {
   const [activeSection, setActiveSection] = useState("hero");
@@ -362,6 +361,22 @@ export default function Portfolio() {
     );
   }
 
+  // Add a simple skeleton loader component
+  const ProjectSkeleton = () => (
+    <div className="bg-background/60 border border-border rounded-2xl shadow-lg p-0 flex flex-col overflow-hidden min-h-[340px] animate-pulse">
+      <div className="aspect-video bg-muted/30" />
+      <div className="p-5">
+        <div className="h-6 bg-muted/40 rounded w-2/3 mb-3" />
+        <div className="h-4 bg-muted/30 rounded w-full mb-2" />
+        <div className="h-4 bg-muted/20 rounded w-1/2 mb-4" />
+        <div className="flex gap-2">
+          <div className="h-6 w-16 bg-muted/30 rounded" />
+          <div className="h-6 w-16 bg-muted/30 rounded" />
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <CustomCursor />
@@ -534,6 +549,7 @@ export default function Portfolio() {
                   threshold={0.1}
                   rootMargin="-100px"
                   textAlign="center"
+                  onLetterAnimationComplete={() => {}}
                 />
               </h1>
               <p className="text-xl text-muted-foreground mb-8">
@@ -599,16 +615,20 @@ export default function Portfolio() {
         <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="mb-12 flex justify-center">
-            <div style={{ width: '100%', maxWidth: 1000, height: 120, position: 'relative' }}>
-              <ASCIIText
-                text="What I do?"
-                enableWaves={false}
-                asciiFontSize={1}
-                textFontSize={50}
-                textColor="#a78bfa"
-                planeBaseHeight={20}
-              />
-            </div>
+            <SplitText
+              text="What I do?"
+              className="text-4xl md:text-6xl font-bold text-center text-primary"
+              delay={100}
+              duration={0.6}
+              ease="power3.out"
+              splitType="chars"
+              from={{ opacity: 0, y: 40 }}
+              to={{ opacity: 1, y: 0 }}
+              threshold={0.1}
+              rootMargin="-100px"
+              textAlign="center"
+              onLetterAnimationComplete={() => {}}
+            />
           </div>
           {/* Content Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
@@ -671,18 +691,12 @@ export default function Portfolio() {
         className="min-h-screen py-16 md:py-20"
       >
         <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center mb-10 md:mb-16"
-          >
+          <div className="text-center mb-10 md:mb-16">
             <h2 className="text-3xl md:text-4xl font-bold">Projects</h2>
             <p className="text-muted-foreground mt-4 max-w-2xl mx-auto">
               Here's some of my projects.
             </p>
-          </motion.div>
+          </div>
 
           <Tabs defaultValue="web" className="w-full">
             <div className="flex justify-center mb-8">
@@ -704,17 +718,44 @@ export default function Portfolio() {
 
             {/* Web Projects */}
             <TabsContent value="web">
-              <ProjectGrid projects={projects.web} />
+              {/* Skeleton loader example: set loading=true to see it */}
+              {false ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {[...Array(4)].map((_, i) => (
+                    <ProjectSkeleton key={i} />
+                  ))}
+                </div>
+              ) : (
+                <ProjectGrid projects={projects.web} />
+              )}
             </TabsContent>
 
             {/* Freelance Projects */}
             <TabsContent value="freelance">
-              <ProjectGrid projects={projects.freelance} />
+              {/* Skeleton loader example: set loading=true to see it */}
+              {false ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {[...Array(4)].map((_, i) => (
+                    <ProjectSkeleton key={i} />
+                  ))}
+                </div>
+              ) : (
+                <ProjectGrid projects={projects.freelance} />
+              )}
             </TabsContent>
 
             {/* Game Projects */}
             <TabsContent value="games">
-              <ProjectGrid projects={projects.games} />
+              {/* Skeleton loader example: set loading=true to see it */}
+              {false ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {[...Array(4)].map((_, i) => (
+                    <ProjectSkeleton key={i} />
+                  ))}
+                </div>
+              ) : (
+                <ProjectGrid projects={projects.games} />
+              )}
             </TabsContent>
           </Tabs>
           <div className="flex justify-center mt-10">
