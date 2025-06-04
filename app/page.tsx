@@ -25,7 +25,7 @@ import {
 } from "lucide-react";
 import { ProjectSlider } from "@/components/project-slider"; // Import ProjectSlider component
 import { Analytics } from "@vercel/analytics/react";
-
+import ASCIIText from "@/components/ASCII";
 
 export default function Portfolio() {
   const [activeSection, setActiveSection] = useState("hero");
@@ -221,13 +221,13 @@ export default function Portfolio() {
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      viewport={{ once: true }}
       className="bg-background/80 border border-border rounded-2xl shadow-lg p-0 flex flex-col overflow-hidden relative group hover:shadow-xl transition-shadow min-h-[340px]"
     >
       <div className="relative w-full aspect-video overflow-hidden">
         <img
           src={project.image}
           alt={project.title}
+          loading="lazy"
           className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
         />
         {!project.isActive && (
@@ -345,7 +345,7 @@ export default function Portfolio() {
               key={i + tech.name}
               className="flex flex-col items-center min-w-[100px] max-w-[120px]"
             >
-              <div className="bg-white/80 dark:bg-white/20 rounded-xl flex items-center justify-center w-14 h-14 mb-2 shadow-sm">
+              <div className="bg-white/80 dark:bg-white rounded-xl flex items-center justify-center w-14 h-14 mb-2 shadow-sm">
                 <img
                   src={tech.icon}
                   alt={tech.name}
@@ -368,7 +368,7 @@ export default function Portfolio() {
       <Analytics />
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-sm border-b">
-        <div className="container mx-auto px-4 py-3 flex justify-between items-center">
+        <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -413,16 +413,16 @@ export default function Portfolio() {
       <section
         id="hero"
         ref={sectionRefs.hero}
-        className="min-h-screen pt-20 flex flex-col justify-center relative overflow-hidden"
+        className="min-h-screen pt-24 flex flex-col justify-center relative overflow-hidden"
       >
-        <div className="container mx-auto px-4 py-12 md:py-20 relative z-10">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
+        <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-20 relative z-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
             {/* Image Column */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
-              className="order-2 md:order-1"
+              className="order-1"
             >
               <div className="relative mx-auto max-w-md">
                 {/* That's me arrow and text */}
@@ -438,21 +438,19 @@ export default function Portfolio() {
                       height: "600px",
                       position: "relative",
                     }}
-                  >
-                   
-                  </div>
+                  ></div>
                 </div>
-                <div className="aspect-square rounded-2xl overflow-hidden border-4 border-background shadow-xl relative z-10">
+                <div className="aspect-square rounded-2xl overflow-hidden border-4 border-background shadow-xl relative z-10 w-40 h-40 sm:w-60 sm:h-60 md:w-72 md:h-72 mx-auto">
                   <img
                     src="profileimage.jpg"
                     alt="Developer"
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <div className="absolute inset-0 bg-primary/10 rounded-2xl transform rotate-3 scale-95 -z-10" />
+                <div className="absolute inset-0 bg-primary/10 rounded-2xl transform rotate-3 scale-95 -z-10 pointer-events-none" />
 
                 {/* Social links */}
-                <div className="flex justify-center gap-4 mt-6">
+                <div className="flex justify-center gap-4 mt-6 relative z-20">
                   <motion.div
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.9 }}
@@ -515,7 +513,7 @@ export default function Portfolio() {
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="order-1 md:order-2 text-center md:text-left"
+              className="order-2 text-center md:text-left"
             >
               <Badge variant="outline" className="mb-4 px-4 py-1 text-sm">
                 Computer Engineer
@@ -548,7 +546,9 @@ export default function Portfolio() {
               {/* Tech Stack */}
               <div className="mb-8">
                 <h3 className="text-lg font-semibold mb-4">Tech Stack</h3>
-                <TechStackCarousel techStack={techStack} />
+                <div className="max-w-full overflow-x-auto">
+                  <TechStackCarousel techStack={techStack} />
+                </div>
               </div>
 
               {/* CTA Buttons */}
@@ -594,19 +594,89 @@ export default function Portfolio() {
         </motion.div>
       </section>
 
+      {/* What I Do Section */}
+      <section className="w-full py-20">
+        <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header */}
+          <div className="mb-12 flex justify-center">
+            <div style={{ width: '100%', maxWidth: 1000, height: 120, position: 'relative' }}>
+              <ASCIIText
+                text="What I do?"
+                enableWaves={false}
+                asciiFontSize={1}
+                textFontSize={50}
+                textColor="#a78bfa"
+                planeBaseHeight={20}
+              />
+            </div>
+          </div>
+          {/* Content Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
+            {/* Left: Accordion */}
+            <div>
+              <div className="space-y-4">
+                {/* Accordion */}
+                <div className="bg-background/80 border rounded-xl p-5 w-full max-w-xl mx-auto md:mx-0">
+                  <details>
+                    <summary className="flex items-center gap-3 cursor-pointer text-lg font-semibold">
+                      <span>💻</span> Fullstack Development
+                    </summary>
+                    <div className="mt-2 text-muted-foreground text-sm">
+                      Building scalable web applications using React, Next.js,
+                      Node.js, TypeScript, and more. Experience with both frontend
+                      and backend, including databases and APIs.
+                    </div>
+                  </details>
+                </div>
+                <div className="bg-background/80 border rounded-xl p-5 w-full max-w-xl mx-auto md:mx-0">
+                  <details>
+                    <summary className="flex items-center gap-3 cursor-pointer text-lg font-semibold">
+                      <span>🎮</span> Game Development
+                    </summary>
+                    <div className="mt-2 text-muted-foreground text-sm">
+                      Creating engaging games with Unity and C#. Experience in
+                      gameplay programming, UI, and publishing.
+                    </div>
+                  </details>
+                </div>
+                <div className="bg-background/80 border rounded-xl p-5 w-full max-w-xl mx-auto md:mx-0">
+                  <details>
+                    <summary className="flex items-center gap-3 cursor-pointer text-lg font-semibold">
+                      <span>🎨</span> Web Design & Freelance Development
+                    </summary>
+                    <div className="mt-2 text-muted-foreground text-sm">
+                      Designing modern, responsive, and visually appealing websites with a focus on user experience and accessibility.
+                    </div>
+                  </details>
+                </div>
+              </div>
+            </div>
+            {/* Right: LetterGlitch effect */}
+            <div className="w-full h-full flex items-center justify-center mt-8 md:mt-0">
+              <div style={{ width: "100%", minHeight: 220, height: "100%", maxWidth: 500 }}>
+                <LetterGlitch
+                  glitchColors={["#a78bfa", "#818cf8", "#c084fc"]}
+                  glitchSpeed={60}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Projects Section */}
       <section
         id="projects"
         ref={sectionRefs.projects}
-        className="min-h-screen py-20"
+        className="min-h-screen py-16 md:py-20"
       >
-        <div className="container mx-auto px-4">
+        <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="text-center mb-10 md:mb-16"
           >
             <h2 className="text-3xl md:text-4xl font-bold">Projects</h2>
             <p className="text-muted-foreground mt-4 max-w-2xl mx-auto">
@@ -616,7 +686,7 @@ export default function Portfolio() {
 
           <Tabs defaultValue="web" className="w-full">
             <div className="flex justify-center mb-8">
-              <TabsList className="grid grid-cols-3 w-full max-w-md">
+              <TabsList className="grid grid-cols-3 w-full max-w-xs md:max-w-md">
                 <TabsTrigger value="web" className="flex items-center gap-2">
                   <Globe className="h-4 w-4" /> Web
                 </TabsTrigger>
@@ -669,7 +739,7 @@ export default function Portfolio() {
 
       {/* Footer */}
       <footer className="py-8 border-t">
-        <div className="container mx-auto px-4 text-center">
+        <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <p className="text-muted-foreground">
             © {new Date().getFullYear()} Deniz Görkem. All rights reserved.
           </p>
