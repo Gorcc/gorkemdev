@@ -105,7 +105,7 @@ export default function Portfolio() {
       {
         title: "Hive Records",
         description: "Custom website development & design for a record label.",
-        tags: ["React", "SASS", "JavaScript"],
+        tags: ["React", "SCSS", "JavaScript"],
         image:
           "https://github.com/Gorcc/cdn/blob/main/port-cdn/ScreenShot%20Tool%20-20250522025100.png?raw=true",
         liveUrl: "https://www.hiverecords24.com",
@@ -556,7 +556,7 @@ export default function Portfolio() {
                 4th year Computer Engineering student studying in North Cyprus.
                 I am passionate about Software Development and worked mostly on
                 Front-end (React) and Game Development. I'm also familliar with
-                backend technologies technologies like Node.js and C#.
+                backend technologies like Node.js and C#.
               </p>
 
               {/* Tech Stack */}
@@ -611,13 +611,13 @@ export default function Portfolio() {
       </section>
 
       {/* What I Do Section */}
-      <section className="w-full py-20">
+      <section className="w-full py-20 bg-black text-white">
         <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Header */}
           <div className="mb-12 flex justify-center">
             <SplitText
               text="What I do?"
-              className="text-4xl md:text-6xl font-bold text-center text-primary"
+              className="text-4xl md:text-6xl font-bold text-center text-white"
               delay={100}
               duration={0.6}
               ease="power3.out"
@@ -636,7 +636,7 @@ export default function Portfolio() {
             <div>
               <div className="space-y-4">
                 {/* Accordion */}
-                <div className="bg-background/80 border rounded-xl p-5 w-full max-w-xl mx-auto md:mx-0">
+                <div className="bg-[#18181b] border-none rounded-xl p-5 w-full max-w-xl mx-auto md:mx-0 text-white">
                   <details>
                     <summary className="flex items-center gap-3 cursor-pointer text-lg font-semibold">
                       <span>💻</span> Fullstack Development
@@ -648,7 +648,7 @@ export default function Portfolio() {
                     </div>
                   </details>
                 </div>
-                <div className="bg-background/80 border rounded-xl p-5 w-full max-w-xl mx-auto md:mx-0">
+                <div className="bg-[#18181b] border-none rounded-xl p-5 w-full max-w-xl mx-auto md:mx-0 text-white">
                   <details>
                     <summary className="flex items-center gap-3 cursor-pointer text-lg font-semibold">
                       <span>🎮</span> Game Development
@@ -659,7 +659,7 @@ export default function Portfolio() {
                     </div>
                   </details>
                 </div>
-                <div className="bg-background/80 border rounded-xl p-5 w-full max-w-xl mx-auto md:mx-0">
+                <div className="bg-[#18181b] border-none rounded-xl p-5 w-full max-w-xl mx-auto md:mx-0 text-white">
                   <details>
                     <summary className="flex items-center gap-3 cursor-pointer text-lg font-semibold">
                       <span>🎨</span> Web Design & Freelance Development
@@ -815,26 +815,3 @@ export default function Portfolio() {
   );
 }
 
-function ThatsMeArrow() {
-  const { theme, systemTheme } = useTheme();
-  const resolvedTheme = theme === "system" ? systemTheme : theme;
-  const isDark = resolvedTheme === "dark";
-  return (
-    <div
-      className="absolute -top-11 left-1/2 flex flex-col items-center select-none"
-      style={{
-        transform: "translateX(-40%)",
-        pointerEvents: "none",
-        zIndex: 20,
-      }}
-    >
-      <img
-        src={"/thatsme-black.png"}
-        alt="That's me arrow"
-        className="w-40 md:w-56 -rotate-12"
-        style={{ transform: "rotate(-18deg)" }}
-        draggable="false"
-      />
-    </div>
-  );
-}
