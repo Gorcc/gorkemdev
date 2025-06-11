@@ -40,15 +40,25 @@ export default function Portfolio() {
     title: string;
     description: string;
     tags: string[];
-    image: string;
+    image?: string;
     liveUrl?: string;
     repoUrl?: string;
     isActive?: boolean;
+    customContent?: React.ReactNode;
   };
 
   // Project data
   const projects: Record<ProjectCategory, Project[]> = {
     web: [
+      {
+        title: "Flight Insight - AI-Powered Flight Dashboard",
+        description: "Flight Insight is a modern, real-time flight dashboard that provides AI-powered insights for your upcoming journey. After booking, simply enter your flight code to unlock a wealth of information designed to make your travel experience smoother and more informed. Currently using mock data and under development, will soon integrate real flight data.",
+        tags: ["Next.js", "React", "AI", "TypeScript", "Tailwind CSS"],
+        image: "https://github.com/Gorcc/cdn/blob/main/port-cdn/screencapture-localhost-3000-2025-06-10-14_08_42.png?raw=true",
+        liveUrl: "https://flight-insight.vercel.app",
+        repoUrl: "https://github.com/Gorcc/flight-insights",
+        isActive: true
+      },
       {
         title: "Jobsyne - AI Powered Job Matching App",
         description:
@@ -141,6 +151,24 @@ export default function Portfolio() {
         isActive: true,
       },
       {
+        title: "Game Development Certificate Projects",
+        description: "During my Game Development certificate, I cloned several high-grossing games to learn and master game development techniques. These projects helped me understand core game mechanics and best practices in the industry.",
+        tags: ["Unity", "C#", "Game Development"],
+        image: undefined,
+        isActive: true,
+        customContent: (
+          <iframe 
+            src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:6981244864432599040?compact=1" 
+            height="399" 
+            width="504" 
+            frameBorder="0" 
+            allowFullScreen 
+            title="LinkedIn Post"
+            className="w-full max-w-[504px] mx-auto"
+          />
+        )
+      },
+      {
         title: "Unnamed Fishing RPG - Ongoing",
         description:
           "A fishing RPG in development with fishing mechanics and character progression. Features an open world and dynamic weather systems. Currently being developed with a team of four.",
@@ -222,21 +250,27 @@ export default function Portfolio() {
       transition={{ duration: 0.5 }}
       className="bg-background/80 border border-border rounded-2xl shadow-lg p-0 flex flex-col overflow-hidden relative group hover:shadow-xl transition-shadow min-h-[340px]"
     >
-      <div className="relative w-full aspect-video overflow-hidden">
-        <img
-          src={project.image}
-          alt={project.title}
-          loading="lazy"
-          className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
-        />
-        {!project.isActive && (
-          <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-            <Badge variant="destructive" className="text-xs px-3 py-1">
-              Currently Inactive
-            </Badge>
-          </div>
-        )}
-      </div>
+      {project.customContent ? (
+        <div className="w-full p-4">
+          {project.customContent}
+        </div>
+      ) : (
+        <div className="relative w-full aspect-video overflow-hidden">
+          <img
+            src={project.image}
+            alt={project.title}
+            loading="lazy"
+            className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
+          />
+          {!project.isActive && (
+            <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+              <Badge variant="destructive" className="text-xs px-3 py-1">
+                Currently Inactive
+              </Badge>
+            </div>
+          )}
+        </div>
+      )}
       <div className="flex-1 flex flex-col justify-between p-5">
         <div>
           <h3 className="font-semibold text-lg mb-1 text-white flex items-center gap-2">
