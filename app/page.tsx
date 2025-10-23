@@ -51,15 +51,6 @@ export default function Portfolio() {
   const projects: Record<ProjectCategory, Project[]> = {
     web: [
       {
-        title: "Flight Insight - AI-Powered Flight Dashboard",
-        description: "Flight Insight is a modern, real-time flight dashboard that provides AI-powered insights for your upcoming journey. After booking, simply enter your flight code to unlock a wealth of information designed to make your travel experience smoother and more informed. Currently using mock data and under development, will soon integrate real flight data.",
-        tags: ["Next.js", "React", "AI", "TypeScript", "Tailwind CSS"],
-        image: "https://github.com/Gorcc/cdn/blob/main/port-cdn/screencapture-localhost-3000-2025-06-10-14_08_42.png?raw=true",
-        liveUrl: "https://flight-insight.vercel.app",
-        repoUrl: "https://github.com/Gorcc/flight-insights",
-        isActive: true
-      },
-      {
         title: "Jobsyne - AI Powered Job Matching App",
         description:
           "A SaaS platform for job matching with AI-powered recommendations. Features include user authentication, real-time notifications, and a responsive UI. Built with Next.js, Supabase, and Stripe integration for payments.",
@@ -79,14 +70,13 @@ export default function Portfolio() {
         isActive: true,
       },
       {
-        title: "Vyral - Video Sharing Platform",
+        title: "Almego Studio",
         description:
-          "A video sharing platform with user authentication, video upload, comments, and likes. Includes video player controls, user profiles, and a recommendation system. Built as a graduation project that won the best project award.",
-        tags: ["Next.js", "Supabase", "TypeScript", "Tailwind CSS", "React"],
+          "A creative agency website with smooth animations and responsive design. Features a portfolio showcase and service information. Built with React and Framer Motion for smooth transitions.",
+        tags: ["React", "Framer Motion", "Tailwind"],
         image:
-          "https://github.com/Gorcc/cdn/blob/main/port-cdn/ScreenShot%20Tool%20-20250522142421.png?raw=true",
-        liveUrl: "vyral-six.vercel.app",
-        repoUrl: "https://github.com/Gorcc/vyral",
+          "https://github.com/Gorcc/cdn/blob/main/port-cdn/ScreenShot%20Tool%20-20250522024034.png?raw=true",
+        liveUrl: "https://www.almego.studio/",
         isActive: true,
       },
       {
@@ -101,13 +91,22 @@ export default function Portfolio() {
         isActive: true,
       },
       {
-        title: "Almego Studio",
+        title: "Fitmego - All-in-One Fitness App",
         description:
-          "A creative agency website with smooth animations and responsive design. Features a portfolio showcase and service information. Built with React and Framer Motion for smooth transitions.",
-        tags: ["React", "Framer Motion", "Tailwind"],
+          "A comprehensive fitness application currently under development by a two-person team. Features AI-powered workout recommendations, nutrition tracking, progress monitoring, and personalized fitness guidance. Built with TypeScript and AWS infrastructure for scalable performance.",
+        tags: ["TypeScript", "AWS", "AI", "Fitness", "Under Development"],
+        image: "fitmego.png",
+        isActive: true,
+      },
+      {
+        title: "Vyral - Video Sharing Platform",
+        description:
+          "A video sharing platform with user authentication, video upload, comments, and likes. Includes video player controls, user profiles, and a recommendation system. Built as a graduation project that won the best project award.",
+        tags: ["Next.js", "Supabase", "TypeScript", "Tailwind CSS", "React"],
         image:
-          "https://github.com/Gorcc/cdn/blob/main/port-cdn/ScreenShot%20Tool%20-20250522024034.png?raw=true",
-        liveUrl: "https://www.almego.studio/",
+          "https://github.com/Gorcc/cdn/blob/main/port-cdn/ScreenShot%20Tool%20-20250522142421.png?raw=true",
+        liveUrl: "vyral-six.vercel.app",
+        repoUrl: "https://github.com/Gorcc/vyral",
         isActive: true,
       },
     ],
@@ -128,15 +127,24 @@ export default function Portfolio() {
         tags: ["React"],
         image:
           "https://github.com/Gorcc/cdn/blob/main/port-site/sly.png?raw=true",
+        liveUrl: "https://www.teamsly.net",
         repoUrl: "https://github.com/Gorcc/sly-team",
         isActive: true,
       },
       {
-        title: "Avengers GYM",
-        description: "Designed and developed a website for a local GYM",
-        tags: ["React"],
-        image:
-          "https://github.com/Gorcc/cdn/blob/main/port-cdn/ScreenShot%20Tool%20-20250522032831.png?raw=true",
+        title: "Pexah.io",
+        description: "A crypto P2P trading platform website with modern design and user-friendly interface for cryptocurrency peer-to-peer transactions.",
+        tags: ["React", "Crypto", "P2P", "Web3"],
+        image: "pexah.png",
+        liveUrl: "https://pexah.io",
+        isActive: true,
+      },
+      {
+        title: "MillerSan",
+        description: "A freelance web development project completed through Bionluk platform. Built with React, JavaScript, and GSAP for smooth animations and modern user experience.",
+        tags: ["React", "JavaScript", "GSAP", "Bionluk"],
+        image: "millersan.png",
+        liveUrl: "https://millersan-test.vercel.app",
         isActive: true,
       },
     ],
@@ -148,6 +156,15 @@ export default function Portfolio() {
         tags: ["Unity", "C#"],
         image:
           "https://github.com/Gorcc/cdn/blob/main/port-cdn/heatkeeper.png?raw=true",
+        isActive: true,
+      },
+      {
+        title: "Delicate Cargo",
+        description:
+          "A 3D action game developed in C# and Unity for EMU Summer Game Jam. Players must deliver the president's cargo while navigating through various challenges and obstacles. Won first place in the game jam competition.",
+        tags: ["Unity", "C#", "Game Jam Winner"],
+        image: "cargo.png",
+        liveUrl: "https://gorcc.itch.io/delicate-cargo",
         isActive: true,
       },
       {
