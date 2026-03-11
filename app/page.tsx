@@ -53,7 +53,7 @@ const projects: Record<ProjectCategory, Project[]> = {
         tr: "Kıbrıs merkezli bir kripto para alım-satım mağazası için frontend geliştirme. Modern ve responsive arayüzüyle aylık 100+ tıklama alıyor.",
         en: "Frontend development for a Cyprus-based cryptocurrency exchange store. Modern, responsive interface with 100+ monthly visits.",
       },
-      tags: ["Next.js", "React", "Tailwind", "TypeScript"],
+      tags: ["Next.js", "React", "Tailwind", "TypeScript" , "API"],
       image:
         "https://github.com/Gorcc/cdn/blob/main/port-cdn/pundex-img.png?raw=true",
       liveUrl: "https://www.pundexcy.com",
