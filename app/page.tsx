@@ -1,229 +1,261 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { CustomCursor } from "@/components/custom-cursor";
-import { useTheme } from "next-themes";
-import SplitText from "@/components/SplitText";
-import LetterGlitch from "@/components/LetterGlitch";
-import LiquidChrome from "@/components/LiquidChrome";
-import dynamic from "next/dynamic";
 import {
   Github,
   Globe,
   Linkedin,
   Mail,
-  Code,
+  Phone,
   Gamepad2,
-  ChevronRight,
   Download,
-  ArrowDown,
+  ArrowRight,
+  Trophy,
 } from "lucide-react";
-import { ProjectSlider } from "@/components/project-slider"; // Import ProjectSlider component
 import { Analytics } from "@vercel/analytics/react";
+import { translations, type Locale } from "@/lib/translations";
+
+type ProjectCategory = "web" | "games";
+type SectionId = "hero" | "about" | "projects";
+
+type Project = {
+  title: string;
+  description: Record<Locale, string>;
+  tags: string[];
+  image?: string;
+  liveUrl?: string;
+  repoUrl?: string;
+  isActive?: boolean;
+  customContent?: React.ReactNode;
+};
+
+const projects: Record<ProjectCategory, Project[]> = {
+  web: [
+    {
+      title: "Soliv",
+      description: {
+        tr: "Tam donanımlı admin paneli, kick API entegrasyonu ve Discord botu içeren oyun sunucusu platformu. İlk haftasında 1.000+ ziyaret ve 150+ kayıtlı üyeye ulaştı.",
+        en: "Game server platform with a full-featured admin panel, kick API integration, and Discord bot. Reached 1,000+ visits in its first week with 150+ registered members.",
+      },
+      tags: ["Next.js", "React", "Tailwind", "Node.js", "Discord.js"],
+      image:
+        "https://github.com/Gorcc/cdn/blob/main/port-cdn/soliv.png?raw=true",
+      liveUrl: "https://soliv.tr",
+      isActive: true,
+    },
+    {
+      title: "Pundex",
+      description: {
+        tr: "Kıbrıs merkezli bir kripto para alım-satım mağazası için frontend geliştirme. Modern ve responsive arayüzüyle aylık 100+ tıklama alıyor.",
+        en: "Frontend development for a Cyprus-based cryptocurrency exchange store. Modern, responsive interface with 100+ monthly visits.",
+      },
+      tags: ["Next.js", "React", "Tailwind", "TypeScript"],
+      image:
+        "https://github.com/Gorcc/cdn/blob/main/port-cdn/pundex-img.png?raw=true",
+      liveUrl: "https://www.pundexcy.com",
+      isActive: true,
+    },
+    {
+      title: "Pexah.io",
+      description: {
+        tr: "Dubai merkezli bir kripto para alım-satım şirketi için frontend geliştirme. Temiz UX odaklı, modern ve responsive arayüz.",
+        en: "Frontend development for a Dubai-based cryptocurrency trading company. Clean, modern interface with a focus on user experience.",
+      },
+      tags: ["Next.js", "React", "Tailwind", "TypeScript"],
+      image: "/pexah.png",
+      liveUrl: "https://pexah.io",
+      isActive: true,
+    },
+    {
+      title: "Hive Records",
+      description: {
+        tr: "Kıbrıs merkezli bir plak şirketi için özel web sitesi tasarımı ve geliştirmesi. Dinamik içerik yönetimi ve responsive tasarım.",
+        en: "Custom website design and development for a Cyprus-based record label with dynamic content and responsive layout.",
+      },
+      tags: ["React", "SCSS", "JavaScript"],
+      image:
+        "https://github.com/Gorcc/cdn/blob/main/port-cdn/ScreenShot%20Tool%20-20250522025100.png?raw=true",
+      liveUrl: "https://www.hiverecords24.com",
+      repoUrl: "https://github.com/Gorcc/studio-website",
+      isActive: true,
+    },
+    {
+      title: "Jobsyne",
+      description: {
+        tr: "Yapay zeka destekli iş eşleştirme SaaS platformu. Kimlik doğrulama, gerçek zamanlı bildirimler ve Stripe ödeme entegrasyonu içerir.",
+        en: "AI-powered job matching SaaS platform with authentication, real-time notifications, and Stripe payment integration.",
+      },
+      tags: ["Next.js", "Supabase", "Stripe", "TypeScript", "GeminiAPI"],
+      image:
+        "https://github.com/Gorcc/cdn/blob/main/port-cdn/jobsyne.png?raw=true",
+      liveUrl: "https://www.jobsyne.com/",
+      repoUrl: "https://github.com/Gorcc/jobsyne",
+      isActive: true,
+    },
+    {
+      title: "Almego Studio",
+      description: {
+        tr: "Akıcı animasyonlar ve responsive tasarıma sahip kreatif ajans web sitesi.",
+        en: "Creative agency website with smooth animations and responsive design.",
+      },
+      tags: ["React", "Framer Motion", "Tailwind"],
+      image:
+        "https://github.com/Gorcc/cdn/blob/main/port-cdn/ScreenShot%20Tool%20-20250522024034.png?raw=true",
+      liveUrl: "https://www.almego.studio/",
+      isActive: true,
+    },
+    {
+      title: "Social Media App",
+      description: {
+        tr: "Sohbet, görsel paylaşım ve direkt mesajlaşma özellikli gerçek zamanlı sosyal platform.",
+        en: "Real-time social platform with chat, image sharing, and direct messaging.",
+      },
+      tags: ["Next.js", "Supabase", "TypeScript"],
+      image:
+        "https://github.com/Gorcc/cdn/blob/main/port-cdn/ScreenShot%20Tool%20-20250522015936.png?raw=true",
+      liveUrl: "https://social-app-xi-hazel.vercel.app",
+      repoUrl: "https://github.com/Gorcc/socialmedia",
+      isActive: true,
+    },
+    {
+      title: "KOROEN Enerji Dergisi",
+      description: {
+        tr: "Enerji teknolojileri ve sürdürülebilirlik odağındaki akademik çalışmaları; teknik analiz, özet ve uzman değerlendirmeleriyle derleyip Türkçe olarak erişilebilir ve bağımsız bir şekilde sunan dergi / yayın koleksiyonu.",
+        en: "An independent Turkish publication that curates academic work on energy technologies and sustainability with technical analyses, summaries, and expert commentary.",
+      },
+      tags: ["Next.js", "React", "Tailwind"],
+      image:
+        "https://github.com/Gorcc/cdn/blob/main/port-cdn/koroen.png?raw=true",
+      liveUrl: "https://www.koroenenerji.com",
+      isActive: true,
+    },
+    {
+      title: "MillerSan",
+      description: {
+        tr: "Bionluk üzerinden alınan freelance web projesi. GSAP animasyonlarıyla zenginleştirilmiş modern tasarım.",
+        en: "Freelance web project via Bionluk with GSAP-powered animations and modern design.",
+      },
+      tags: ["React", "JavaScript", "GSAP"],
+      image: "/millersan.png",
+      liveUrl: "https://millersan-test.vercel.app",
+      isActive: true,
+    },
+  ],
+  games: [
+    {
+      title: "Heat Keeper",
+      description: {
+        tr: "Zanaat mekaniğine sahip 3D demircilik oyunu. EMU Winter Jam 2025 için geliştirildi.",
+        en: "3D blacksmithing game with crafting mechanics. Built for EMU Winter Jam 2025.",
+      },
+      tags: ["Unity", "C#", "Game Jam"],
+      image:
+        "https://github.com/Gorcc/cdn/blob/main/port-cdn/heatkeeper.png?raw=true",
+      isActive: true,
+    },
+    {
+      title: "Delicate Cargo",
+      description: {
+        tr: "3D aksiyon oyunu — EMU Summer Game Jam birincilik ödülü.",
+        en: "3D action game — EMU Summer Game Jam first place winner.",
+      },
+      tags: ["Unity", "C#", "Game Jam Winner"],
+      image: "/cargo.png",
+      liveUrl: "https://gorcc.itch.io/delicate-cargo",
+      isActive: true,
+    },
+    {
+      title: "Game Dev Certificate Projects",
+      description: {
+        tr: "Oyun geliştirme tekniklerini öğrenmek için çeşitli popüler oyunların klonlanması.",
+        en: "Cloned several high-grossing games to master game development techniques.",
+      },
+      tags: ["Unity", "C#", "Game Development"],
+      image: undefined,
+      isActive: true,
+      customContent: (
+        <iframe
+          src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:6981244864432599040?compact=1"
+          height="284"
+          width="100%"
+          frameBorder="0"
+          allowFullScreen
+          title="LinkedIn Post"
+          className="w-full"
+        />
+      ),
+    },
+    {
+      title: "Unnamed Fishing RPG",
+      description: {
+        tr: "Açık dünya ve dinamik hava sistemiyle geliştirme aşamasındaki balıkçılık RPG'si.",
+        en: "Fishing RPG in development with open world and dynamic weather.",
+      },
+      tags: ["Unity", "C#", "In Development"],
+      image:
+        "https://github.com/Gorcc/cdn/blob/main/port-cdn/fishgame.png?raw=true",
+      isActive: true,
+    },
+    {
+      title: "Crazy Highway!",
+      description: {
+        tr: "Google Play Store'da yayınlanan 3D mobil taksi oyunu.",
+        en: "3D mobile taxi game, published on Google Play Store.",
+      },
+      tags: ["Unity", "C#", "Mobile"],
+      image:
+        "https://github.com/Gorcc/cdn/blob/main/port-site/crazyhighway.png?raw=true",
+      liveUrl: "https://gorcc.itch.io/crazy-highway",
+      isActive: true,
+    },
+  ],
+};
+
+const awards = [
+  { title: "Jotform Best Product Project", icon: "🏆" },
+  { title: "EMU Best Graduation Project", icon: "🎓" },
+  { title: "EMU Summer Game Jam 1st", icon: "🥇" },
+  { title: "EMU Vault Game Jam 2nd", icon: "🥈" },
+];
+
+const techStack = [
+  "React",
+  "Next.js",
+  "TypeScript",
+  "Node.js",
+  "Tailwind",
+  "Unity",
+  "C#",
+  "MongoDB",
+  "SQL",
+  "Git",
+];
+
+const LOCALE_KEY = "gorkem-dev-locale";
 
 export default function Portfolio() {
+  const [locale, setLocale] = useState<Locale>("tr");
   const [activeSection, setActiveSection] = useState("hero");
   const sectionRefs = {
     hero: useRef<HTMLElement>(null),
+    about: useRef<HTMLElement>(null),
     projects: useRef<HTMLElement>(null),
   };
 
-  type ProjectCategory = "web" | "freelance" | "games";
-  type SectionId = "hero" | "projects";
+  useEffect(() => {
+    const stored = localStorage.getItem(LOCALE_KEY) as Locale | null;
+    if (stored === "tr" || stored === "en") setLocale(stored);
+  }, []);
 
-  type Project = {
-    title: string;
-    description: string;
-    tags: string[];
-    image?: string;
-    liveUrl?: string;
-    repoUrl?: string;
-    isActive?: boolean;
-    customContent?: React.ReactNode;
-  };
+  useEffect(() => {
+    localStorage.setItem(LOCALE_KEY, locale);
+    document.documentElement.lang = locale === "tr" ? "tr" : "en";
+  }, [locale]);
 
-  // Project data
-  const projects: Record<ProjectCategory, Project[]> = {
-    web: [
-      {
-        title: "Jobsyne - AI Powered Job Matching App",
-        description:
-          "A SaaS platform for job matching with AI-powered recommendations. Features include user authentication, real-time notifications, and a responsive UI. Built with Next.js, Supabase, and Stripe integration for payments.",
-        tags: [
-          "Next.js",
-          "Stripe",
-          "Tailwind",
-          "React",
-          "Typescript",
-          "Supabase",
-          "GeminiAPI",
-        ],
-        image:
-          "https://github.com/Gorcc/cdn/blob/main/port-cdn/jobsyne.png?raw=true",
-        liveUrl: "https://www.jobsyne.com/",
-        repoUrl: "https://github.com/Gorcc/jobsyne",
-        isActive: true,
-      },
-      {
-        title: "Almego Studio",
-        description:
-          "A creative agency website with smooth animations and responsive design. Features a portfolio showcase and service information. Built with React and Framer Motion for smooth transitions.",
-        tags: ["React", "Framer Motion", "Tailwind"],
-        image:
-          "https://github.com/Gorcc/cdn/blob/main/port-cdn/ScreenShot%20Tool%20-20250522024034.png?raw=true",
-        liveUrl: "https://www.almego.studio/",
-        isActive: true,
-      },
-      {
-        title: "Social Media App",
-        description:
-          "A social media platform with real-time chat, image sharing, and post creation. Features include user authentication, direct messaging, and real-time updates. Built with Next.js and Supabase for real-time functionality.",
-        tags: ["Next.js", "React", "Supabase", "Tailwind", "TypeScript"],
-        image:
-          "https://github.com/Gorcc/cdn/blob/main/port-cdn/ScreenShot%20Tool%20-20250522015936.png?raw=true",
-        liveUrl: "https://social-app-xi-hazel.vercel.app",
-        repoUrl: "https://github.com/Gorcc/socialmedia",
-        isActive: true,
-      },
-      {
-        title: "Fitmego - All-in-One Fitness App",
-        description:
-          "A comprehensive fitness application currently under development by a two-person team. Features AI-powered workout recommendations, nutrition tracking, progress monitoring, and personalized fitness guidance. Built with TypeScript and AWS infrastructure for scalable performance.",
-        tags: ["TypeScript", "AWS", "AI", "Fitness", "Under Development"],
-        image: "fitmego.png",
-        isActive: true,
-      },
-      {
-        title: "Vyral - Video Sharing Platform",
-        description:
-          "A video sharing platform with user authentication, video upload, comments, and likes. Includes video player controls, user profiles, and a recommendation system. Built as a graduation project that won the best project award.",
-        tags: ["Next.js", "Supabase", "TypeScript", "Tailwind CSS", "React"],
-        image:
-          "https://github.com/Gorcc/cdn/blob/main/port-cdn/ScreenShot%20Tool%20-20250522142421.png?raw=true",
-        liveUrl: "vyral-six.vercel.app",
-        repoUrl: "https://github.com/Gorcc/vyral",
-        isActive: true,
-      },
-    ],
-    freelance: [
-      {
-        title: "Hive Records",
-        description: "Custom website development & design for a record label.",
-        tags: ["React", "SCSS", "JavaScript"],
-        image:
-          "https://github.com/Gorcc/cdn/blob/main/port-cdn/ScreenShot%20Tool%20-20250522025100.png?raw=true",
-        liveUrl: "https://www.hiverecords24.com",
-        repoUrl: "https://github.com/Gorcc/studio-website",
-        isActive: true,
-      },
-      {
-        title: "Team Sly",
-        description: "Freelance work, for a GTA V racing team",
-        tags: ["React"],
-        image:
-          "https://github.com/Gorcc/cdn/blob/main/port-site/sly.png?raw=true",
-        liveUrl: "https://www.teamsly.net",
-        repoUrl: "https://github.com/Gorcc/sly-team",
-        isActive: true,
-      },
-      {
-        title: "Pexah.io",
-        description: "A crypto P2P trading platform website with modern design and user-friendly interface for cryptocurrency peer-to-peer transactions.",
-        tags: ["React", "Crypto", "P2P", "Web3"],
-        image: "pexah.png",
-        liveUrl: "https://pexah.io",
-        isActive: true,
-      },
-      {
-        title: "MillerSan",
-        description: "A freelance web development project completed through Bionluk platform. Built with React, JavaScript, and GSAP for smooth animations and modern user experience.",
-        tags: ["React", "JavaScript", "GSAP", "Bionluk"],
-        image: "millersan.png",
-        liveUrl: "https://millersan-test.vercel.app",
-        isActive: true,
-      },
-    ],
-    games: [
-      {
-        title: "Heat Keeper",
-        description:
-          "A 3D blacksmithing game with crafting mechanics and resource management. Built for Winter Jam 2025 EMU as part of a three-person team.",
-        tags: ["Unity", "C#"],
-        image:
-          "https://github.com/Gorcc/cdn/blob/main/port-cdn/heatkeeper.png?raw=true",
-        isActive: true,
-      },
-      {
-        title: "Delicate Cargo",
-        description:
-          "A 3D action game developed in C# and Unity for EMU Summer Game Jam. Players must deliver the president's cargo while navigating through various challenges and obstacles. Won first place in the game jam competition.",
-        tags: ["Unity", "C#", "Game Jam Winner"],
-        image: "cargo.png",
-        liveUrl: "https://gorcc.itch.io/delicate-cargo",
-        isActive: true,
-      },
-      {
-        title: "Game Development Certificate Projects",
-        description: "During my Game Development certificate, I cloned several high-grossing games to learn and master game development techniques. These projects helped me understand core game mechanics and best practices in the industry.",
-        tags: ["Unity", "C#", "Game Development"],
-        image: undefined,
-        isActive: true,
-        customContent: (
-          <iframe 
-            src="https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:6981244864432599040?compact=1" 
-            height="399" 
-            width="504" 
-            frameBorder="0" 
-            allowFullScreen 
-            title="LinkedIn Post"
-            className="w-full max-w-[504px] mx-auto"
-          />
-        )
-      },
-      {
-        title: "Unnamed Fishing RPG - Ongoing",
-        description:
-          "A fishing RPG in development with fishing mechanics and character progression. Features an open world and dynamic weather systems. Currently being developed with a team of four.",
-        tags: ["Unity", "C#"],
-        image:
-          "https://github.com/Gorcc/cdn/blob/main/port-cdn/fishgame.png?raw=true",
-        isActive: true,
-      },
-      {
-        title: "Crazy Highway!",
-        description: "A 3D Mobile Taxi game, published on Google Play Store",
-        tags: ["Unity", "C#"],
-        image:
-          "https://github.com/Gorcc/cdn/blob/main/port-site/crazyhighway.png?raw=true",
-        liveUrl: "https://gorcc.itch.io/crazy-highway",
-        isActive: true,
-      },
-    ],
-  };
-
-  // Skills data with proficiency levels
-  const techStack = [
-    { name: "React", icon: "/tech/react-svgrepo-com.svg" },
-    { name: "Next.js", icon: "/tech/next-dot-js-svgrepo-com.svg" },
-    { name: "TypeScript", icon: "/tech/typescript-icon-svgrepo-com.svg" },
-    { name: "JavaScript", icon: "/tech/js-svgrepo-com.svg" },
-    { name: "Node.js", icon: "/tech/node-js-svgrepo-com.svg" },
-    { name: "HTML5", icon: "/tech/html-5-svgrepo-com.svg" },
-    { name: "CSS3", icon: "/tech/css-3-svgrepo-com.svg" },
-    { name: "Tailwind", icon: "/tech/tailwind-svgrepo-com.svg" },
-    { name: "Unity", icon: "/tech/unity-svgrepo-com.svg" },
-    { name: "C#", icon: "/tech/csharp-svgrepo-com.svg" },
-    { name: "MongoDB", icon: "/tech/mongodb-svgrepo-com.svg" },
-    { name: "SQL", icon: "/tech/sql-svgrepo-com.svg" },
-    { name: "Git", icon: "/tech/git-svgrepo-com.svg" },
-  ];
-
-  // Intersection Observer to detect active section
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -233,7 +265,7 @@ export default function Portfolio() {
           }
         });
       },
-      { threshold: 0.5 }
+      { threshold: 0.3 }
     );
 
     Object.values(sectionRefs).forEach(
@@ -247,622 +279,521 @@ export default function Portfolio() {
     };
   }, []);
 
-  // Scroll to section
+  const t = translations[locale];
+
   const scrollToSection = (sectionId: SectionId) => {
     sectionRefs[sectionId].current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  // Helper to get subtitle
-  const getProjectSubtitle = (project: Project) => {
-    if (project.isActive === false) return "Inactive";
-    if (project.repoUrl && !project.liveUrl) return "Contributor";
-    if (project.liveUrl && project.isActive) return "On Development";
-    return "";
-  };
-
-  const ProjectCard = ({ project }: { project: Project }) => (
+  const ProjectShowcase = ({
+    project,
+    index,
+    isEven,
+  }: {
+    project: Project;
+    index: number;
+    isEven: boolean;
+  }) => (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="bg-background/80 border border-border rounded-2xl shadow-lg p-0 flex flex-col overflow-hidden relative group hover:shadow-xl transition-shadow min-h-[340px]"
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.6, delay: 0.1 }}
+      className="group py-12 first:pt-0 last:pb-0"
     >
-      {project.customContent ? (
-        <div className="w-full p-4">
-          {project.customContent}
-        </div>
-      ) : (
-        <div className="relative w-full aspect-video overflow-hidden">
-          <img
-            src={project.image}
-            alt={project.title}
-            loading="lazy"
-            className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
-          />
-          {!project.isActive && (
-            <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-              <Badge variant="destructive" className="text-xs px-3 py-1">
-                Currently Inactive
-              </Badge>
+      <div
+        className={`grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center ${
+          isEven ? "" : "lg:direction-rtl"
+        }`}
+      >
+        {/* Image */}
+        <motion.div
+          initial={{ opacity: 0, x: isEven ? -30 : 30 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className={isEven ? "lg:order-1" : "lg:order-2"}
+        >
+          {project.customContent ? (
+            <div className="w-full rounded-lg overflow-hidden border border-border bg-card p-4">
+              {project.customContent}
+            </div>
+          ) : project.image ? (
+            <div className="relative w-full aspect-video overflow-hidden rounded-lg border border-border bg-muted">
+              <img
+                src={project.image}
+                alt={project.title}
+                loading="lazy"
+                className="object-cover w-full h-full group-hover:scale-[1.03] transition-transform duration-700"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.style.display = "none";
+                  if (target.parentElement) {
+                    target.parentElement.classList.add(
+                      "flex",
+                      "items-center",
+                      "justify-center"
+                    );
+                    const placeholder = document.createElement("span");
+                    placeholder.className =
+                      "font-mono text-sm text-muted-foreground";
+                    placeholder.textContent = `// ${project.title.toLowerCase()}`;
+                    target.parentElement.appendChild(placeholder);
+                  }
+                }}
+              />
+            </div>
+          ) : (
+            <div className="w-full aspect-video bg-muted rounded-lg border border-border flex items-center justify-center">
+              <span className="font-mono text-sm text-muted-foreground">
+                {"// " + project.title.toLowerCase()}
+              </span>
             </div>
           )}
-        </div>
-      )}
-      <div className="flex-1 flex flex-col justify-between p-5">
-        <div>
-          <h3 className="font-semibold text-lg mb-1 text-white flex items-center gap-2">
+        </motion.div>
+
+        {/* Info */}
+        <motion.div
+          initial={{ opacity: 0, x: isEven ? 30 : -30 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className={isEven ? "lg:order-2" : "lg:order-1"}
+        >
+          <span className="font-mono text-xs text-muted-foreground block mb-3">
+            // {String(index + 1).padStart(2, "0")}
+          </span>
+          <h3 className="font-display text-2xl sm:text-3xl font-bold tracking-tight mb-3">
             {project.title}
           </h3>
-          <p className="text-sm text-muted-foreground mb-2">
-            {project.description}
+          <p className="text-muted-foreground leading-relaxed mb-5">
+            {project.description[locale]}
           </p>
-        </div>
-        <div className="flex items-center justify-between mt-2">
-          <div className="flex flex-wrap gap-2">
-            {project.tags.map((tag, tagIndex) => (
-              <Badge key={tagIndex} variant="secondary" className="text-xs">
+
+          <div className="flex flex-wrap gap-2 mb-6">
+            {project.tags.map((tag, i) => (
+              <span
+                key={i}
+                className="font-mono text-xs text-muted-foreground bg-muted px-2.5 py-1 rounded"
+              >
                 {tag}
-              </Badge>
+              </span>
             ))}
           </div>
-          <div className="flex gap-2">
-            {project.repoUrl && (
-              <Button
-                size="icon"
-                variant="outline"
-                asChild
-                className="rounded-full"
-              >
-                <a
-                  href={project.repoUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Code className="h-4 w-4" />
-                </a>
-              </Button>
-            )}
+
+          <div className="flex items-center gap-3">
             {project.liveUrl && (
-              <Button
-                size="icon"
-                variant="outline"
-                asChild
-                className="rounded-full"
+              <a
+                href={
+                  project.liveUrl.startsWith("http")
+                    ? project.liveUrl
+                    : `https://${project.liveUrl}`
+                }
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 font-mono text-xs bg-foreground text-background px-4 py-2 rounded hover:opacity-90 transition-opacity"
               >
-                <a
-                  href={
-                    project.liveUrl.startsWith("http")
-                      ? project.liveUrl
-                      : `https://${project.liveUrl}`
-                  }
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Globe className="h-4 w-4" />
-                </a>
-              </Button>
+                <Globe className="h-3.5 w-3.5" /> Live
+              </a>
+            )}
+            {project.repoUrl && (
+              <a
+                href={project.repoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 font-mono text-xs border border-border px-4 py-2 rounded hover:border-foreground/30 transition-colors"
+              >
+                <Github className="h-3.5 w-3.5" /> Code
+              </a>
             )}
           </div>
-        </div>
+        </motion.div>
       </div>
     </motion.div>
   );
 
-  const ProjectGrid = ({ projects }: { projects: Project[] }) => (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-      {projects.map((project, index) => (
-        <ProjectCard key={index} project={project} />
-      ))}
-    </div>
-  );
-
-  // TechStackCarousel component
-  function TechStackCarousel({
-    techStack,
-  }: {
-    techStack: { name: string; icon: string }[];
-  }) {
-    const [x, setX] = useState(0);
-    const containerRef = useRef<HTMLDivElement>(null);
-    const speed = 0.5; // px per frame
-    const iconWidth = 120; // px (should match min-w/max-w)
-    const totalIcons = techStack.length * 2; // doubled for seamless loop
-
-    useEffect(() => {
-      let animationId: number;
-      const animate = () => {
-        setX((prev) => {
-          // Reset when scrolled past half (original list)
-          if (Math.abs(prev) >= techStack.length * iconWidth) {
-            return 0;
-          }
-          return prev - speed;
-        });
-        animationId = requestAnimationFrame(animate);
-      };
-      animationId = requestAnimationFrame(animate);
-      return () => cancelAnimationFrame(animationId);
-    }, [techStack.length]);
-
-    // Duplicate the array for seamless looping
-    const displayStack = [...techStack, ...techStack];
-
-    return (
-      <div className="w-full overflow-hidden" ref={containerRef}>
-        <motion.div className="flex gap-8" style={{ x }}>
-          {displayStack.map((tech, i) => (
-            <div
-              key={i + tech.name}
-              className="flex flex-col items-center min-w-[100px] max-w-[120px]"
-            >
-              <div className="bg-white/80 dark:bg-white rounded-xl flex items-center justify-center w-14 h-14 mb-2 shadow-sm">
-                <img
-                  src={tech.icon}
-                  alt={tech.name}
-                  className="w-10 h-10 object-contain"
-                />
-              </div>
-              <span className="text-sm text-muted-foreground font-medium">
-                {tech.name}
-              </span>
-            </div>
-          ))}
-        </motion.div>
-      </div>
-    );
-  }
-
-  // Add a simple skeleton loader component
-  const ProjectSkeleton = () => (
-    <div className="bg-background/60 border border-border rounded-2xl shadow-lg p-0 flex flex-col overflow-hidden min-h-[340px] animate-pulse">
-      <div className="aspect-video bg-muted/30" />
-      <div className="p-5">
-        <div className="h-6 bg-muted/40 rounded w-2/3 mb-3" />
-        <div className="h-4 bg-muted/30 rounded w-full mb-2" />
-        <div className="h-4 bg-muted/20 rounded w-1/2 mb-4" />
-        <div className="flex gap-2">
-          <div className="h-6 w-16 bg-muted/30 rounded" />
-          <div className="h-6 w-16 bg-muted/30 rounded" />
-        </div>
-      </div>
-    </div>
-  );
-
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <CustomCursor />
       <Analytics />
+
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-sm border-b">
-        <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
-            className="text-xl font-bold"
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-md border-b border-border">
+        <div className="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
+          <button
+            onClick={() => scrollToSection("hero")}
+            className="font-mono text-sm tracking-tight hover:text-foreground transition-colors"
           >
-            gorkem.dev
-          </motion.div>
-          <div className="flex items-center gap-4">
-            <div className="hidden md:flex gap-6">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className={`text-sm font-medium ${
-                  activeSection === "hero"
-                    ? "text-primary"
-                    : "text-muted-foreground"
+            {"<gorkem.dev>"}
+          </button>
+          <div className="flex items-center gap-6">
+            <div className="hidden sm:flex items-center gap-5">
+              <button
+                onClick={() => scrollToSection("about")}
+                className={`font-mono text-xs transition-colors ${
+                  activeSection === "about"
+                    ? "text-foreground"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
-                onClick={() => scrollToSection("hero")}
               >
-                About Me
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className={`text-sm font-medium ${
-                  activeSection === "projects"
-                    ? "text-primary"
-                    : "text-muted-foreground"
-                }`}
+                {t.nav.about}
+              </button>
+              <button
                 onClick={() => scrollToSection("projects")}
+                className={`font-mono text-xs transition-colors ${
+                  activeSection === "projects"
+                    ? "text-foreground"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
               >
-                Projects
-              </motion.button>
-            </div>
-            <ThemeToggle />
-          </div>
-        </div>
-      </nav>
-
-      {/* Combined Hero & About Section */}
-      <section
-        id="hero"
-        ref={sectionRefs.hero}
-        className="min-h-screen pt-24 flex flex-col justify-center relative overflow-hidden"
-      >
-        <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-20 relative z-10">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
-            {/* Image Column */}
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-              className="order-1"
-            >
-              <div className="relative mx-auto max-w-md">
-                {/* That's me arrow and text */}
-
-                {/* LiquidChrome background */}
-                <div
-                  className="absolute inset-0 flex items-center justify-center z-0"
-                  style={{ transform: "scale(1.15)" }}
-                >
-                  <div
-                    style={{
-                      width: "100%",
-                      height: "600px",
-                      position: "relative",
-                    }}
-                  ></div>
-                </div>
-                <div className="aspect-square rounded-2xl overflow-hidden border-4 border-background shadow-xl relative z-10 w-40 h-40 sm:w-60 sm:h-60 md:w-72 md:h-72 mx-auto">
-                  <img
-                    src="profileimage.jpg"
-                    alt="Developer"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="absolute inset-0 bg-primary/10 rounded-2xl transform rotate-3 scale-95 -z-10 pointer-events-none" />
-
-                {/* Social links */}
-                <div className="flex justify-center gap-4 mt-6 relative z-20">
-                  <motion.div
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                  >
-                    <Button
-                      size="icon"
-                      variant="outline"
-                      className="rounded-full"
-                      asChild
-                    >
-                      <a
-                        href="https://github.com/Gorcc"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <Github className="h-5 w-5" />
-                      </a>
-                    </Button>
-                  </motion.div>
-                  <motion.div
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                  >
-                    <Button
-                      size="icon"
-                      variant="outline"
-                      className="rounded-full"
-                      asChild
-                    >
-                      <a
-                        href="https://www.linkedin.com/in/gorkemater/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <Linkedin className="h-5 w-5" />
-                      </a>
-                    </Button>
-                  </motion.div>
-                  <motion.div
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                  >
-                    <Button
-                      size="icon"
-                      variant="outline"
-                      className="rounded-full"
-                      asChild
-                    >
-                      <a href="mailto:gorkem.ater1@gmail.com">
-                        <Mail className="h-5 w-5" />
-                      </a>
-                    </Button>
-                  </motion.div>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Text Column */}
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="order-2 text-center md:text-left"
-            >
-              <Badge variant="outline" className="mb-4 px-4 py-1 text-sm">
-                Computer Engineer
-              </Badge>
-              <Badge variant="outline" className="mb-4 px-4 py-1 text-sm">
-                Software Developer
-              </Badge>
-              <h1 className="text-4xl md:text-5xl font-bold mb-6">
-                <SplitText
-                  text="Hi, I'm Deniz Görkem!"
-                  className="text-5xl font-semibold text-center"
-                  delay={100}
-                  duration={0.6}
-                  ease="power3.out"
-                  splitType="chars"
-                  from={{ opacity: 0, y: 40 }}
-                  to={{ opacity: 1, y: 0 }}
-                  threshold={0.1}
-                  rootMargin="-100px"
-                  textAlign="center"
-                  onLetterAnimationComplete={() => {}}
-                />
-              </h1>
-              <p className="text-xl text-muted-foreground mb-8">
-                4th year Computer Engineering student studying in North Cyprus.
-                I am passionate about Software Development and worked mostly on
-                Front-end (React) and Game Development. I'm also familliar with
-                backend technologies like Node.js and C#.
-              </p>
-
-              {/* Tech Stack */}
-              <div className="mb-8">
-                <h3 className="text-lg font-semibold mb-4">Tech Stack</h3>
-                <div className="max-w-full overflow-x-auto">
-                  <TechStackCarousel techStack={techStack} />
-                </div>
-              </div>
-
-              {/* CTA Buttons */}
-              <div className="flex flex-wrap justify-center md:justify-start gap-4">
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Button size="lg" onClick={() => scrollToSection("projects")}>
-                    View My Work <ChevronRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </motion.div>
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Button size="lg" variant="outline" asChild>
-                    <a
-                      href="https://github.com/Gorcc/cdn/blob/main/port-cdn/DenizG%C3%B6rkem-CV.pdf?raw=true"
-                      download
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <Download className="mr-2 h-4 w-4" /> Download Resume
-                    </a>
-                  </Button>
-                </motion.div>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-
-        {/* Scroll indicator */}
-        <motion.div
-          className="absolute bottom-4 md:bottom-8 -translate-x-1/2 hidden md:flex flex-col items-center w-full px-2"
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY }}
-        >
-          <span className="text-xs md:text-sm text-muted-foreground mb-2 text-center w-full">
-            Scroll to see my projects
-          </span>
-          <ArrowDown className="h-5 w-5 text-muted-foreground" />
-        </motion.div>
-      </section>
-
-      {/* What I Do Section */}
-      <section className="w-full py-20 bg-black text-white">
-        <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Header */}
-          <div className="mb-12 flex justify-center">
-            <SplitText
-              text="What I do?"
-              className="text-4xl md:text-6xl font-bold text-center text-white"
-              delay={100}
-              duration={0.6}
-              ease="power3.out"
-              splitType="chars"
-              from={{ opacity: 0, y: 40 }}
-              to={{ opacity: 1, y: 0 }}
-              threshold={0.1}
-              rootMargin="-100px"
-              textAlign="center"
-              onLetterAnimationComplete={() => {}}
-            />
-          </div>
-          {/* Content Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
-            {/* Left: Accordion */}
-            <div>
-              <div className="space-y-4">
-                {/* Accordion */}
-                <div className="bg-[#18181b] border-none rounded-xl p-5 w-full max-w-xl mx-auto md:mx-0 text-white">
-                  <details>
-                    <summary className="flex items-center gap-3 cursor-pointer text-lg font-semibold">
-                      <span>💻</span> Fullstack Development
-                    </summary>
-                    <div className="mt-2 text-muted-foreground text-sm">
-                      Building scalable web applications using React, Next.js,
-                      Node.js, TypeScript, and more. Experience with both frontend
-                      and backend, including databases and APIs.
-                    </div>
-                  </details>
-                </div>
-                <div className="bg-[#18181b] border-none rounded-xl p-5 w-full max-w-xl mx-auto md:mx-0 text-white">
-                  <details>
-                    <summary className="flex items-center gap-3 cursor-pointer text-lg font-semibold">
-                      <span>🎮</span> Game Development
-                    </summary>
-                    <div className="mt-2 text-muted-foreground text-sm">
-                      Creating engaging games with Unity and C#. Experience in
-                      gameplay programming, UI, and publishing.
-                    </div>
-                  </details>
-                </div>
-                <div className="bg-[#18181b] border-none rounded-xl p-5 w-full max-w-xl mx-auto md:mx-0 text-white">
-                  <details>
-                    <summary className="flex items-center gap-3 cursor-pointer text-lg font-semibold">
-                      <span>🎨</span> Web Design & Freelance Development
-                    </summary>
-                    <div className="mt-2 text-muted-foreground text-sm">
-                      Designing modern, responsive, and visually appealing websites with a focus on user experience and accessibility.
-                    </div>
-                  </details>
-                </div>
-              </div>
-            </div>
-            {/* Right: LetterGlitch effect */}
-            <div className="w-full h-full flex items-center justify-center mt-8 md:mt-0">
-              <div style={{ width: "100%", minHeight: 220, height: "100%", maxWidth: 500 }}>
-                <LetterGlitch
-                  glitchColors={["#a78bfa", "#818cf8", "#c084fc"]}
-                  glitchSpeed={60}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Projects Section */}
-      <section
-        id="projects"
-        ref={sectionRefs.projects}
-        className="min-h-screen py-16 md:py-20"
-      >
-        <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-10 md:mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold">Projects</h2>
-            <p className="text-muted-foreground mt-4 max-w-2xl mx-auto">
-              Here's some of my projects.
-            </p>
-          </div>
-
-          <Tabs defaultValue="web" className="w-full">
-            <div className="flex justify-center mb-8">
-              <TabsList className="grid grid-cols-3 w-full max-w-xs md:max-w-md">
-                <TabsTrigger value="web" className="flex items-center gap-2">
-                  <Globe className="h-4 w-4" /> Web
-                </TabsTrigger>
-                <TabsTrigger
-                  value="freelance"
-                  className="flex items-center gap-2"
-                >
-                  <Code className="h-4 w-4" /> Freelance
-                </TabsTrigger>
-                <TabsTrigger value="games" className="flex items-center gap-2">
-                  <Gamepad2 className="h-4 w-4" /> Games
-                </TabsTrigger>
-              </TabsList>
-            </div>
-
-            {/* Web Projects */}
-            <TabsContent value="web">
-              {/* Skeleton loader example: set loading=true to see it */}
-              {false ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  {[...Array(4)].map((_, i) => (
-                    <ProjectSkeleton key={i} />
-                  ))}
-                </div>
-              ) : (
-                <ProjectGrid projects={projects.web} />
-              )}
-            </TabsContent>
-
-            {/* Freelance Projects */}
-            <TabsContent value="freelance">
-              {/* Skeleton loader example: set loading=true to see it */}
-              {false ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  {[...Array(4)].map((_, i) => (
-                    <ProjectSkeleton key={i} />
-                  ))}
-                </div>
-              ) : (
-                <ProjectGrid projects={projects.freelance} />
-              )}
-            </TabsContent>
-
-            {/* Game Projects */}
-            <TabsContent value="games">
-              {/* Skeleton loader example: set loading=true to see it */}
-              {false ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  {[...Array(4)].map((_, i) => (
-                    <ProjectSkeleton key={i} />
-                  ))}
-                </div>
-              ) : (
-                <ProjectGrid projects={projects.games} />
-              )}
-            </TabsContent>
-          </Tabs>
-          <div className="flex justify-center mt-10">
-            <Button
-              size="lg"
-              asChild
-              className="px-8 py-4 text-lg font-semibold"
-            >
-              <a
-                href="https://github.com/Gorcc?tab=repositories"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                More Projects on GitHub
-              </a>
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* Certificates & Awards Section */}
-
-      {/* Footer */}
-      <footer className="py-8 border-t">
-        <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p className="text-muted-foreground">
-            © {new Date().getFullYear()} Deniz Görkem. All rights reserved.
-          </p>
-          <div className="flex justify-center gap-4 mt-4">
-            <Button size="icon" variant="ghost" asChild>
+                {t.nav.projects}
+              </button>
               <a
                 href="https://github.com/Gorcc"
                 target="_blank"
                 rel="noopener noreferrer"
+                className="font-mono text-xs text-muted-foreground hover:text-foreground transition-colors"
               >
-                <Github className="h-5 w-5" />
+                {t.nav.github}
               </a>
-            </Button>
-            <Button size="icon" variant="ghost" asChild>
               <a
-                href="https://www.linkedin.com/in/gorkemater/"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="mailto:gorkem.ater1@gmail.com"
+                className="font-mono text-xs text-muted-foreground hover:text-foreground transition-colors"
               >
-                <Linkedin className="h-5 w-5" />
+                {t.nav.contact}
               </a>
-            </Button>
-            <Button size="icon" variant="ghost" asChild>
-              <a href="mailto:gorkem.ater1@gmail.com">
-                <Mail className="h-5 w-5" />
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="font-mono text-xs flex gap-1">
+                <button
+                  onClick={() => setLocale("tr")}
+                  className={`px-2 py-1 rounded transition-colors ${
+                    locale === "tr"
+                      ? "bg-foreground text-background"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  TR
+                </button>
+                <button
+                  onClick={() => setLocale("en")}
+                  className={`px-2 py-1 rounded transition-colors ${
+                    locale === "en"
+                      ? "bg-foreground text-background"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  EN
+                </button>
+              </div>
+              <ThemeToggle />
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* Hero */}
+      <section
+        id="hero"
+        ref={sectionRefs.hero}
+        className="min-h-screen flex items-center relative"
+      >
+        <div className="max-w-5xl mx-auto px-6 py-32 w-full">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+          >
+            <div className="flex items-center gap-5 mb-8">
+              <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-border shrink-0">
+                <img
+                  src="/profileimage.jpg"
+                  alt="Deniz Görkem"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div>
+                <span className="font-mono text-xs text-muted-foreground block mb-1">
+                  {t.hero.portfolio}
+                </span>
+                <span className="font-mono text-sm text-muted-foreground">
+                  {t.hero.location}
+                </span>
+              </div>
+            </div>
+
+            <h1 className="font-display text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight mb-6">
+              {"<Deniz Görkem>"}
+            </h1>
+
+            <p className="font-mono text-base sm:text-lg text-muted-foreground mb-4">
+              {t.hero.role}
+            </p>
+
+            <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mb-6 leading-relaxed">
+              {t.hero.bio}
+            </p>
+
+            <div className="flex flex-wrap gap-x-6 gap-y-2 mb-8">
+              <a
+                href="tel:+905338763495"
+                className="inline-flex items-center gap-2 font-mono text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <Phone className="h-4 w-4" />
+                0533 876 34 95
               </a>
-            </Button>
+              <a
+                href="mailto:gorkem.ater1@gmail.com"
+                className="inline-flex items-center gap-2 font-mono text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <Mail className="h-4 w-4" />
+                gorkem.ater1@gmail.com
+              </a>
+            </div>
+
+            <div className="font-mono text-xs text-muted-foreground mb-6">
+              <span className="text-foreground/40">{"// "}</span>
+              {techStack.join(" · ")}
+            </div>
+
+            <div className="flex flex-wrap gap-x-5 gap-y-1.5 mb-10">
+              {awards.map((award, i) => (
+                <span
+                  key={i}
+                  className="inline-flex items-center gap-1.5 font-mono text-xs text-muted-foreground"
+                >
+                  <Trophy className="h-3 w-3 shrink-0" />
+                  {award.title}
+                </span>
+              ))}
+            </div>
+
+            <div className="flex flex-wrap gap-3">
+              <Button
+                size="lg"
+                onClick={() => scrollToSection("projects")}
+                className="font-mono text-sm"
+              >
+                {t.hero.btnProjects} <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+              <Button size="lg" variant="outline" asChild className="font-mono text-sm">
+                <a
+                  href="https://github.com/Gorcc/cdn/blob/main/port-cdn/DenizG%C3%B6rkemAter%20-%20CV.pdf?raw=true"
+                  download
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Download className="mr-2 h-4 w-4" /> {t.hero.btnCv}
+                </a>
+              </Button>
+            </div>
+          </motion.div>
+
+          <div className="flex gap-4 mt-16">
+            <a
+              href="https://github.com/Gorcc"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <Github className="h-5 w-5" />
+            </a>
+            <a
+              href="https://www.linkedin.com/in/gorkemater/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <Linkedin className="h-5 w-5" />
+            </a>
+            <a
+              href="mailto:gorkem.ater1@gmail.com"
+              className="text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <Mail className="h-5 w-5" />
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* About */}
+      <section
+        id="about"
+        ref={sectionRefs.about}
+        className="py-24 border-t border-border"
+      >
+        <div className="max-w-5xl mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            <h2 className="font-mono text-sm text-muted-foreground mb-10">
+              {t.about.title}
+            </h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="space-y-2">
+                <h3 className="font-display text-lg font-semibold">
+                  {t.about.fullstack}
+                </h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {t.about.fullstackDesc}
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <h3 className="font-display text-lg font-semibold">
+                  {t.about.gameDev}
+                </h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {t.about.gameDevDesc}
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <h3 className="font-display text-lg font-semibold">
+                  {t.about.freelance}
+                </h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {t.about.freelanceDesc}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Projects */}
+      <section
+        id="projects"
+        ref={sectionRefs.projects}
+        className="py-24 border-t border-border"
+      >
+        <div className="max-w-5xl mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            <h2 className="font-mono text-sm text-muted-foreground mb-10">
+              {t.projects.title}
+            </h2>
+          </motion.div>
+
+          <Tabs defaultValue="web" className="w-full">
+            <TabsList className="bg-transparent border border-border p-1 mb-14 w-fit">
+              <TabsTrigger
+                value="web"
+                className="font-mono text-xs data-[state=active]:bg-foreground data-[state=active]:text-background rounded-sm px-4"
+              >
+                <Globe className="h-3.5 w-3.5 mr-1.5" /> {t.projects.web}
+              </TabsTrigger>
+              <TabsTrigger
+                value="games"
+                className="font-mono text-xs data-[state=active]:bg-foreground data-[state=active]:text-background rounded-sm px-4"
+              >
+                <Gamepad2 className="h-3.5 w-3.5 mr-1.5" /> {t.projects.games}
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="web">
+              <div className="divide-y divide-border">
+                {projects.web.map((project, i) => (
+                  <ProjectShowcase
+                    key={i}
+                    project={project}
+                    index={i}
+                    isEven={i % 2 === 0}
+                  />
+                ))}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="games">
+              <div className="divide-y divide-border">
+                {projects.games.map((project, i) => (
+                  <ProjectShowcase
+                    key={i}
+                    project={project}
+                    index={i}
+                    isEven={i % 2 === 0}
+                  />
+                ))}
+              </div>
+            </TabsContent>
+          </Tabs>
+
+          <div className="mt-10">
+            <a
+              href="https://github.com/Gorcc?tab=repositories"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-mono text-sm text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-2"
+            >
+              {t.projects.moreOnGithub} <ArrowRight className="h-3.5 w-3.5" />
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-16 border-t border-border">
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+            <div>
+              <span className="font-mono text-sm text-muted-foreground block mb-3">
+                {t.footer.contact}
+              </span>
+              <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+                <a
+                  href="mailto:gorkem.ater1@gmail.com"
+                  className="inline-flex items-center gap-1.5 font-mono text-xs text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <Mail className="h-3.5 w-3.5" />
+                  gorkem.ater1@gmail.com
+                </a>
+                <a
+                  href="tel:+905338763495"
+                  className="inline-flex items-center gap-1.5 font-mono text-xs text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <Phone className="h-3.5 w-3.5" />
+                  0533 876 34 95
+                </a>
+              </div>
+              <div className="flex gap-4 mt-4">
+                <a
+                  href="https://github.com/Gorcc"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <Github className="h-4 w-4" />
+                </a>
+                <a
+                  href="https://www.linkedin.com/in/gorkemater/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <Linkedin className="h-4 w-4" />
+                </a>
+                <a
+                  href="mailto:gorkem.ater1@gmail.com"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <Mail className="h-4 w-4" />
+                </a>
+              </div>
+            </div>
+
+            <p className="font-mono text-xs text-muted-foreground">
+              &copy; {new Date().getFullYear()} {t.footer.copyright}
+            </p>
           </div>
         </div>
       </footer>
     </div>
   );
 }
-
